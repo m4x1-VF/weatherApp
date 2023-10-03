@@ -1,10 +1,11 @@
-const API_WEATHER = `http://api.weatherapi.com/v1/current.json?key=${
-  import.meta.env.VITE_API_KEY
-}&lang=es&q=`;
 const fetchApi = async (city) => {
   try {
     if (!city.trim()) throw { message: "No city provided" };
-    const res = await fetch(`${API_WEATHER}${city}`);
+    const res = await fetch(
+      `http://api.weatherapi.com/v1/forecast.json?key=${
+        import.meta.env.VITE_API_KEY
+      }&q=${city}&days=3&aqi=no&alerts=no`
+    );
     const data = await res.json();
     if (data.error) throw { message: data.error.message };
     return data;
