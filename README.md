@@ -1,6 +1,6 @@
 #WeatherApp
 
-**WeatherApp** is a simple weather app that uses the [weather API](https://www.weatherapi.com/)to display the current weather conditions for a given city.
+**WeatherApp** is a simple weather app that uses the [weather API](https://www.weatherapi.com/) to display the current weather conditions for a given city.
 
 ## Features
 
