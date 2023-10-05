@@ -1,7 +1,10 @@
-import { Box, Container, IconButton, Typography } from "@mui/material";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Box, Container, Divider, IconButton, Typography } from "@mui/material";
 import Input from "@mui/joy/Input";
 import SearchIcon from "@mui/icons-material/Search";
-
+import Brightness5Icon from "@mui/icons-material/Brightness5";
+import CircleIcon from "@mui/icons-material/Circle";
 import { useState } from "react";
 import fetchApi from "./services/fetchApi";
 
@@ -15,6 +18,15 @@ const App = () => {
     conditionText: "",
     icon: "",
   });
+  const [forecast, setForecast] = useState([
+    {
+      date: "",
+      maxTemperature: 0,
+      minTemperature: 0,
+      conditionText: "",
+      conditionIcon: "",
+    },
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +40,31 @@ const App = () => {
       conditionText: data.current.condition.text,
       icon: data.current.condition.icon,
     });
+    setForecast([
+      {
+        date: data.forecast.forecastday[0].date,
+        maxTemperature: data.forecast.forecastday[0].day.maxtemp_c,
+        minTemperature: data.forecast.forecastday[0].day.mintemp_c,
+        conditionText: data.forecast.forecastday[0].day.condition.text,
+        conditionIcon: data.forecast.forecastday[0].day.condition.icon,
+      },
+      {
+        date: data.forecast.forecastday[1].date,
+        maxTemperature: data.forecast.forecastday[1].day.maxtemp_c,
+        minTemperature: data.forecast.forecastday[1].day.mintemp_c,
+        conditionText: data.forecast.forecastday[1].day.condition.text,
+        conditionIcon: data.forecast.forecastday[1].day.condition.icon,
+      },
+      {
+        date: data.forecast.forecastday[2].date,
+        maxTemperature: data.forecast.forecastday[2].day.maxtemp_c,
+        minTemperature: data.forecast.forecastday[2].day.mintemp_c,
+        conditionText: data.forecast.forecastday[2].day.condition.text,
+        conditionIcon: data.forecast.forecastday[2].day.condition.icon,
+      },
+    ]);
   };
+
   return (
     <Container maxWidth="xs" sx={{ mt: 2 }}>
       <Typography variant="h3" component="h1" align="center" gutterBottom>
@@ -76,11 +112,57 @@ const App = () => {
           <Typography variant="h5" component="h3">
             {weather.temperature}°C
           </Typography>
-          <Typography variant="h6" component="h4">
+          <Typography variant="h6" component="h4" sx={{ mb: 2 }}>
             {weather.conditionText}
           </Typography>
+          <Divider />
         </Box>
       )}
+
+      {forecast.length > 1 &&
+        forecast?.map((forecast) => (
+          <Box
+            sx={{
+              mt: 2,
+              display: "grid",
+              gap: 2,
+              textAlign: "center",
+            }}
+            key={forecast.date}
+          >
+            <Typography variant="h5" component="h3">
+              {forecast.date &&
+                format(new Date(forecast.date), "EEEE, dd MMMM", {
+                  locale: es,
+                })}
+            </Typography>
+            <Typography
+              variant="h5"
+              component="h3"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Brightness5Icon color="warning" /> MAX {forecast.maxTemperature}
+              °C
+              <CircleIcon color="primary" /> MIN {forecast.minTemperature}°C
+            </Typography>
+            <Box
+              component="img"
+              src={forecast.conditionIcon}
+              alt="forecast.conditionText"
+              sx={{ margin: "0 auto" }}
+            />
+
+            <Typography variant="h6" component="h4">
+              {forecast.conditionText}
+            </Typography>
+            <Divider />
+          </Box>
+        ))}
     </Container>
   );
 };
